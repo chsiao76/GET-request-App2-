@@ -12,20 +12,27 @@ function watchForm() {
 
 function getDogImage(myValue) {
   fetch('https://dog.ceo/api/breed/' + myValue + '/images')
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+        throw new Error(response.statusText);
+    })
+
     .then(responseJson => 
       displayResults(responseJson))
-    .catch(error => alert('Something went wrong. Try again later.'));
-}
-
+    .catch(err => {
+      $('#js-error-message').text('Invalid dog breed! Try again (maybe lowercase this time)');
+    });
+  };
 function displayResults(responseJson) {
   console.log(responseJson);
+  $('.results-img').empty();
   for (let i = 0; i < responseJson.message.length; i++) {
     $('.results-img').append (
       `<img src="${responseJson.message[i]}">`
     )
-  }
-
+  };
 
   //display the results section
   $('.results').removeClass('hidden');
